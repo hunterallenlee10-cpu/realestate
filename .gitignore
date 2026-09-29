@@ -1,0 +1,25 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+
+# environment
+.env
+.env.*
+
+# local tooling / QA output (qa/*.mjs scripts are kept)
+.netlify/
+.vercel/
+qa/out/
+qa/shots/
+qa/slices/
+qa/lh/
+qa/motion/
+
+# OS
+.DS_Store
