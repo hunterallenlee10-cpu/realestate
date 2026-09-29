@@ -1,0 +1,27 @@
+---
+/** Inline stroke icons (decorative — always paired with visible text). */
+interface Props {
+  name: 'arrow' | 'external' | 'pause' | 'play' | 'close';
+  class?: string;
+}
+const { name, class: className } = Astro.props;
+---
+
+<svg
+  class:list={['icon', `icon--${name}`, className]}
+  viewBox="0 0 24 24"
+  width="24"
+  height="24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.5"
+  stroke-linecap="square"
+  aria-hidden="true"
+  focusable="false"
+>
+  {name === 'arrow' && <path d="M3 12h17M14 5.5 20.5 12 14 18.5" />}
+  {name === 'external' && <path d="M7 17 17 7M8.5 7H17v8.5" />}
+  {name === 'pause' && <path d="M8.5 5v14M15.5 5v14" />}
+  {name === 'play' && <path d="M7 4.5v15L19 12 7 4.5Z" />}
+  {name === 'close' && <path d="M5 5l14 14M19 5 5 19" />}
+</svg>

@@ -1,0 +1,76 @@
+---
+import { Font, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import shareImage from '../assets/listings/serene-hills/00-twilight-aerial.jpg';
+
+interface Props {
+  title: string;
+  description?: string;
+  headerMode?: 'over' | 'solid';
+  hasContact?: boolean;
+  image?: ImageMetadata;
+}
+
+const {
+  title,
+  description = 'Kelly Robertson, Coldwell Banker Elite — homes in Fredericksburg, Stafford, Spotsylvania and King George, Virginia.',
+  headerMode = 'over',
+  hasContact = true,
+  image = shareImage,
+} = Astro.props;
+
+// Link-preview image (for when the private link is texted or emailed).
+const og = await getImage({ src: image, width: 1200, height: 630, fit: 'cover', format: 'jpg', quality: 76 });
+const ogUrl = Astro.site ? new URL(og.src, Astro.site).href : og.src;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Private pitch: keep every page out of search engines. Remove at launch. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#f7f3ec" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-body" preload />
+
+    <script is:inline>
+      // Motion is opt-in: only when JS runs and the visitor hasn't asked for reduced motion.
+      // If the motion script hasn't started within 3s, reveal everything anyway.
+      (function () {
+        var d = document.documentElement;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('motion');
+        setTimeout(function () {
+          if (!window.__motionReady) d.classList.remove('motion');
+        }, 3000);
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader mode={headerMode} hasContact={hasContact} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <SiteFooter />
+
+    <script>
+      import '../scripts/site';
+    </script>
+  </body>
+</html>

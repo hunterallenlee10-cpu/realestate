@@ -1,0 +1,92 @@
+---
+import Icon from './Icon.astro';
+import { brokerage } from '../data/site';
+---
+
+<section class="intro grid" aria-labelledby="intro-title">
+  <h2 id="intro-title" class="visually-hidden">A note from Kelly</h2>
+  <p class="label label--muted intro__label" data-reveal="fade">
+    {brokerage.name}<span class="intro__dot" aria-hidden="true"> · </span><br class="intro__br" />Fredericksburg
+  </p>
+
+  <div class="intro__body">
+    <!-- DRAFT: written from Kelly's own bio — for her approval (see README). -->
+    <p class="intro__text serif" data-reveal="lines">
+      My family has called Virginia home for generations, and Fredericksburg has always been our home base. I
+      know this region by heart — its river, its brick-lined downtown, and the country roads that run out through
+      Stafford, Spotsylvania and King George. I’ve been a Virginia REALTOR® since 2005, I’m an investor myself, and
+      as part of a military family I know what it takes to <em>make a new place feel like home.</em>
+    </p>
+
+    <div class="intro__foot" data-reveal="fade">
+      <span class="placeholder">[Draft — written from Kelly’s bio, for her approval]</span>
+      <a class="link" href="/about/">Meet Kelly <Icon name="arrow" /></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    padding-block: clamp(7rem, 15vw, 14rem) clamp(6rem, 12vw, 11rem);
+    row-gap: 2rem;
+  }
+
+  .intro__label {
+    grid-column: 1 / span 3;
+    padding-top: 0.9rem;
+  }
+
+  .intro__body {
+    grid-column: 5 / -1;
+  }
+
+  .intro__dot {
+    display: none;
+  }
+
+  .intro__text {
+    font-size: clamp(1.75rem, 1.1rem + 2.35vw, 3.35rem);
+    line-height: 1.14;
+    letter-spacing: -0.008em;
+    text-indent: 2.2em;
+  }
+
+  .intro__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem 2rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (max-width: 63.99rem) {
+    .intro__label {
+      grid-column: 1 / -1;
+    }
+
+    .intro__body {
+      grid-column: 2 / -1;
+    }
+
+    .intro__br {
+      display: none;
+    }
+
+    .intro__dot {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .intro__body {
+      grid-column: 1 / -1;
+    }
+
+    .intro__text {
+      text-indent: 1.4em;
+    }
+  }
+</style>

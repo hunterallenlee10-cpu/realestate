@@ -1,0 +1,47 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<Base title="Page not found — Kelly Robertson" headerMode="solid" hasContact={false}>
+  <section class="nf grid" aria-labelledby="nf-title">
+    <p class="label nf__kicker">404</p>
+    <h1 id="nf-title" class="display nf__title">Wrong <em>turn.</em></h1>
+    <p class="lead nf__text">That page doesn’t exist — but the rest of Fredericksburg does.</p>
+    <a class="link nf__back" href="/">Back to the homepage <Icon name="arrow" /></a>
+  </section>
+</Base>
+
+<style>
+  .nf {
+    min-height: 80vh;
+    padding-top: calc(var(--header-h) + clamp(4rem, 12vw, 10rem));
+    padding-bottom: clamp(5rem, 10vw, 9rem);
+    align-content: start;
+    row-gap: 1.5rem;
+  }
+
+  .nf__kicker {
+    grid-column: 1 / -1;
+    color: var(--brick);
+  }
+
+  .nf__title {
+    grid-column: 1 / -1;
+    font-size: var(--step-6);
+    line-height: 0.86;
+  }
+
+  .nf__text,
+  .nf__back {
+    grid-column: 5 / span 6;
+    justify-self: start;
+  }
+
+  @media (max-width: 63.99rem) {
+    .nf__text,
+    .nf__back {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

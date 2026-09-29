@@ -1,0 +1,173 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { neighborhoods } from '../data/places';
+
+const ratios = ['portrait', 'landscape', 'landscape', 'tall'] as const;
+const sizes = [
+  '(max-width: 47.99rem) 84vw, 40vw',
+  '(max-width: 47.99rem) 84vw, 48vw',
+  '(max-width: 47.99rem) 84vw, 48vw',
+  '(max-width: 47.99rem) 84vw, 32vw',
+];
+---
+
+<section class="places" id="neighborhoods" aria-labelledby="places-title">
+  <div class="places__head grid">
+    <p class="label label--muted places__kicker" data-reveal="fade">Neighborhoods</p>
+    <h2 id="places-title" class="display places__title" data-reveal="lines">Four places, <em>one river.</em></h2>
+    <p class="places__intro lead" data-reveal="fade">
+      The Rappahannock runs past all four — the city itself, and the three counties that meet it at the water.
+    </p>
+  </div>
+
+  <ul class="places__grid grid" role="list">
+    {
+      neighborhoods.map((n, i) => (
+        <li class={`place place--${i + 1}`}>
+          <Photo
+            src={n.photo.src}
+            alt={n.photo.alt}
+            ratio={ratios[i]}
+            sizes={sizes[i]}
+            widths={[480, 720, 1000, 1400, 1800]}
+            focus={n.photo.focus}
+            reveal="wipe"
+            kenburns={i % 2 === 1 ? 'scroll' : undefined}
+          />
+          <div class="place__text" data-reveal="fade">
+            <p class="label label--muted">
+              <span class="place__num">{String(i + 1).padStart(2, '0')}</span>
+              {n.label}
+            </p>
+            <h3 class="display place__name">{n.name}</h3>
+            <p class="place__blurb">{n.blurb}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="places__foot grid">
+    <a class="link" href="#contact">Ask Kelly about a neighborhood <Icon name="arrow" /></a>
+  </div>
+</section>
+
+<style>
+  .places {
+    padding-block: clamp(7rem, 14vw, 13rem) clamp(6rem, 11vw, 10rem);
+    background: var(--paper);
+  }
+
+  .places__head {
+    row-gap: 1.5rem;
+    padding-bottom: clamp(3.5rem, 8vw, 7.5rem);
+  }
+
+  .places__kicker {
+    grid-column: 1 / span 3;
+    padding-top: 1rem;
+  }
+
+  .places__title {
+    grid-column: 4 / span 8;
+    font-size: var(--step-4);
+  }
+
+  .places__intro {
+    grid-column: 7 / span 5;
+    max-width: 30em;
+    color: var(--muted);
+  }
+
+  .places__grid {
+    margin: 0;
+    align-items: start;
+    row-gap: clamp(3.5rem, 7vw, 6rem);
+  }
+
+  .place--1 {
+    grid-column: 1 / span 5;
+  }
+
+  .place--2 {
+    grid-column: 7 / -1;
+    margin-top: clamp(4rem, 16vw, 15rem);
+  }
+
+  .place--3 {
+    grid-column: 2 / span 6;
+    margin-top: clamp(0rem, 2vw, 2rem);
+  }
+
+  .place--4 {
+    grid-column: 9 / span 4;
+    margin-top: clamp(3rem, 12vw, 11rem);
+  }
+
+  .place__text {
+    margin-top: 1.4rem;
+    max-width: 30em;
+  }
+
+  .place__num {
+    color: var(--brick);
+    margin-right: 0.8em;
+  }
+
+  .place__name {
+    margin-top: 0.5rem;
+    font-size: var(--step-3);
+    line-height: 1;
+  }
+
+  .place__blurb {
+    margin-top: 0.85rem;
+    color: var(--muted);
+  }
+
+  .places__foot {
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  .places__foot .link {
+    grid-column: 2 / -1;
+    justify-self: start;
+  }
+
+  @media (max-width: 63.99rem) {
+    .places__kicker {
+      grid-column: 1 / -1;
+    }
+
+    .places__title {
+      grid-column: 1 / -1;
+    }
+
+    .places__intro {
+      grid-column: 5 / -1;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .places__intro {
+      grid-column: 1 / -1;
+    }
+
+    .place--1,
+    .place--3 {
+      grid-column: 1 / span 5;
+      margin-top: 0;
+    }
+
+    .place--2,
+    .place--4 {
+      grid-column: 2 / -1;
+      margin-top: 0;
+    }
+
+    .places__foot .link {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,33 @@
+---
+/**
+ * Equal Housing Opportunity mark (HUD) — house outline with an equals sign,
+ * drawn with a mask so it works on light or dark backgrounds.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const id = `eho-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<svg
+  class:list={['eho', className]}
+  viewBox="0 0 64 60"
+  width="64"
+  height="60"
+  role="img"
+  aria-labelledby={`${id}-t`}
+>
+  <title id={`${id}-t`}>Equal Housing Opportunity</title>
+  <defs>
+    <mask id={`${id}-m`}>
+      <rect width="64" height="60" fill="#fff"></rect>
+      <path d="M32 11.5 13 25.2V53h38V25.2Z" fill="#000"></path>
+    </mask>
+  </defs>
+  <g fill="currentColor">
+    <path d="M32 2 1 24.6h6.2V60h49.6V24.6H63Z" mask={`url(#${id}-m)`}></path>
+    <rect x="21" y="30" width="22" height="5.6"></rect>
+    <rect x="21" y="40" width="22" height="5.6"></rect>
+  </g>
+</svg>

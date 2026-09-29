@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Intro from '../components/Intro.astro';
+import ListingChapter from '../components/ListingChapter.astro';
+import MoreListings from '../components/MoreListings.astro';
+import Neighborhoods from '../components/Neighborhoods.astro';
+import AboutKelly from '../components/AboutKelly.astro';
+import LocalLife from '../components/LocalLife.astro';
+import Contact from '../components/Contact.astro';
+import { hero } from '../data/places';
+---
+
+<Base title="Kelly Robertson — Fredericksburg Real Estate | Coldwell Banker Elite">
+  <Hero
+    poster={hero.poster.src}
+    posterAlt={hero.poster.alt}
+    posterFocus={hero.poster.focus}
+    video={hero.video}
+    nowShowing={hero.nowShowing}
+    captions={hero.captions}
+    kicker="Fredericksburg · Stafford · Spotsylvania · King George"
+  />
+  <Intro />
+  <ListingChapter />
+  <MoreListings />
+  <Neighborhoods />
+  <AboutKelly />
+  <LocalLife />
+  <Contact />
+</Base>

@@ -1,0 +1,234 @@
+---
+/**
+ * Contact — posts to Netlify Forms (detected at deploy from the static HTML).
+ * On Vercel or any other host the form renders but won't deliver; see README.
+ */
+import Icon from './Icon.astro';
+import { agent, brokerage } from '../data/site';
+
+interface Props {
+  /** When set (listing pages), the message is pre-filled and the address is sent along. */
+  listing?: string;
+}
+const { listing } = Astro.props;
+const prefill = listing ? `I’d like to know more about ${listing}.` : '';
+---
+
+<section class="contact on-ink" id="contact" aria-labelledby="contact-title">
+  <div class="contact__grid grid">
+    <p class="label label--muted contact__kicker" data-reveal="fade">Contact</p>
+    <h2 id="contact-title" class="display contact__title" data-reveal="lines">Let’s <em>talk.</em></h2>
+
+    <div class="contact__details" data-reveal="fade">
+      <dl class="contact__list">
+        <div>
+          <dt class="label label--muted">Direct</dt>
+          <dd><a class="contact__big serif" href={agent.direct.href}>{agent.direct.display}</a></dd>
+        </div>
+        <div>
+          <dt class="label label--muted">Email</dt>
+          <dd><a class="contact__email" href={`mailto:${agent.email}`}>{agent.email}</a></dd>
+        </div>
+        <div>
+          <dt class="label label--muted">Office</dt>
+          <dd>
+            {brokerage.name}, {brokerage.office}<br />
+            {brokerage.street}<br />
+            {`${brokerage.city}, ${brokerage.state} ${brokerage.zip}`}<br />
+            <a href={brokerage.phone.href}>{brokerage.phone.display}</a>
+          </dd>
+        </div>
+      </dl>
+      <ul class="contact__social" role="list">
+        <li><a class="link" href={agent.facebook.href}>Facebook <Icon name="external" /></a></li>
+        <li><a class="link" href={agent.instagram.href}>Instagram <Icon name="external" /></a></li>
+      </ul>
+    </div>
+
+    <form
+      class="contact__form"
+      name="contact"
+      method="POST"
+      action="/thanks/"
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      data-reveal="fade"
+    >
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="hidden" name="listing" value={listing ?? ''} />
+      <p hidden>
+        <label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+      </p>
+
+      <div class="field">
+        <label class="label" for="contact-name">Name</label>
+        <input id="contact-name" name="name" type="text" autocomplete="name" required />
+      </div>
+      <div class="field">
+        <label class="label" for="contact-email">Email</label>
+        <input id="contact-email" name="email" type="email" autocomplete="email" inputmode="email" required />
+      </div>
+      <div class="field">
+        <label class="label" for="contact-message">Message</label>
+        <textarea id="contact-message" name="message" rows="4" required>{prefill}</textarea>
+      </div>
+
+      <div class="contact__submit">
+        <button class="pill pill--solid" type="submit">Send message <Icon name="arrow" /></button>
+        <p class="contact__fine muted">Prefer the phone? Call Kelly directly at <span class="nowrap">{agent.direct.display}</span>.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-block: clamp(6rem, 12vw, 11rem) clamp(5rem, 9vw, 8rem);
+  }
+
+  .contact__grid {
+    row-gap: 2rem;
+    align-items: start;
+  }
+
+  .contact__kicker {
+    grid-column: 1 / -1;
+  }
+
+  .contact__title {
+    grid-column: 1 / -1;
+    font-size: var(--step-6);
+    line-height: 0.86;
+    letter-spacing: -0.025em;
+    margin-bottom: clamp(2rem, 6vw, 5rem);
+  }
+
+  .contact__details {
+    grid-column: 1 / span 4;
+  }
+
+  .contact__list {
+    display: grid;
+    gap: 1.75rem;
+  }
+
+  .contact__list dd {
+    margin-top: 0.35rem;
+    line-height: 1.55;
+  }
+
+  .contact__list a {
+    text-decoration-color: var(--rule-on-ink);
+  }
+
+  .contact__list a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .contact__big {
+    font-size: var(--step-2);
+    line-height: 1.1;
+    text-decoration: none;
+  }
+
+  .contact__email {
+    overflow-wrap: anywhere;
+  }
+
+  .contact__social {
+    display: flex;
+    gap: 1.75rem;
+    margin: 2.25rem 0 0;
+  }
+
+  .contact__form {
+    grid-column: 6 / -1;
+    display: grid;
+    gap: clamp(1.75rem, 3vw, 2.5rem);
+  }
+
+  .field {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .field label {
+    color: var(--muted-on-ink);
+  }
+
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 0.55rem 0 0.8rem;
+    border: 0;
+    border-bottom: 1px solid var(--rule-on-ink);
+    border-radius: 0;
+    background: transparent;
+    color: var(--ivory);
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.25;
+    transition: border-color 0.4s var(--ease-out);
+  }
+
+  .field textarea {
+    min-height: 7.5rem;
+    resize: vertical;
+    font-size: var(--step-1);
+    font-family: var(--font-body);
+  }
+
+  .field input:hover,
+  .field textarea:hover {
+    border-bottom-color: var(--muted-on-ink);
+  }
+
+  .field input:focus,
+  .field textarea:focus {
+    border-bottom-color: var(--ivory);
+  }
+
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: 2px solid var(--ivory);
+    outline-offset: 6px;
+  }
+
+  .field input:user-invalid,
+  .field textarea:user-invalid {
+    border-bottom-color: var(--brick-on-ink);
+  }
+
+  .contact__submit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2rem;
+    margin-top: 0.5rem;
+  }
+
+  .contact__fine {
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 63.99rem) {
+    .contact__details {
+      grid-column: 1 / span 5;
+    }
+
+    .contact__form {
+      grid-column: 7 / -1;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .contact__details,
+    .contact__form {
+      grid-column: 1 / -1;
+    }
+
+    .contact__form {
+      margin-top: 2rem;
+    }
+  }
+</style>

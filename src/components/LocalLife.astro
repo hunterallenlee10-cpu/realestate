@@ -1,0 +1,164 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { agent } from '../data/site';
+import { localLife } from '../data/places';
+
+---
+
+<section class="life" aria-labelledby="life-title">
+  <div class="life__head grid">
+    <p class="label label--muted life__kicker" data-reveal="fade">Local life, on Instagram</p>
+    <h2 id="life-title" class="display life__title" data-reveal="fade">
+      <a href={agent.instagram.href}>{agent.instagram.handle}</a>
+    </h2>
+    <a class="pill life__follow" href={agent.instagram.href}>Follow along <Icon name="external" /></a>
+  </div>
+
+  <ul class="life__strip" role="list" aria-label="Photos around Fredericksburg" data-scroll-region>
+    {
+      localLife.slice(0, 6).map((p, i) => (
+        <li class={`life__tile life__tile--${i + 1}`}>
+          <Photo
+            src={p.src}
+            alt={p.alt}
+            ratio={p.ratio}
+            sizes="(max-width: 47.99rem) 62vw, 18vw"
+            widths={[360, 540, 720, 960]}
+            focus={p.focus}
+            reveal="wipe"
+          />
+        </li>
+      ))
+    }
+  </ul>
+
+  <p class="life__note wrap">
+    <span class="placeholder">[Placeholder photos — swap in posts from {agent.instagram.handle}]</span>
+  </p>
+</section>
+
+<style>
+  .life {
+    padding-block: clamp(6rem, 11vw, 10rem);
+    overflow: hidden;
+  }
+
+  .life__head {
+    align-items: end;
+    row-gap: 1.25rem;
+    padding-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .life__kicker {
+    grid-column: 1 / span 4;
+  }
+
+  .life__title {
+    grid-column: 1 / span 9;
+    grid-row: 2;
+    font-size: var(--step-4);
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+
+  .life__title a {
+    text-decoration: none;
+  }
+
+  .life__title a:hover {
+    font-style: italic;
+  }
+
+  .life__follow {
+    grid-column: 10 / -1;
+    grid-row: 2;
+    justify-self: end;
+    margin-bottom: 0.5rem;
+  }
+
+  /* An uneven filmstrip: six widths, six heights */
+  .life__strip {
+    display: grid;
+    grid-template-columns: 1.15fr 0.9fr 1.3fr 0.8fr 1.1fr 0.95fr;
+    align-items: start;
+    gap: clamp(0.625rem, 1.2vw, 1.25rem);
+    margin: 0;
+    padding: 0 var(--margin);
+    list-style: none;
+  }
+
+  .life__strip:focus-visible {
+    outline-offset: -2px;
+  }
+
+  .life__tile--2 {
+    margin-top: clamp(2rem, 6vw, 6rem);
+  }
+
+  .life__tile--3 {
+    margin-top: clamp(0.5rem, 1.5vw, 1.5rem);
+  }
+
+  .life__tile--4 {
+    margin-top: clamp(3rem, 9vw, 8rem);
+  }
+
+  .life__tile--5 {
+    margin-top: clamp(1rem, 3vw, 3rem);
+  }
+
+  .life__tile--6 {
+    margin-top: clamp(4rem, 11vw, 10rem);
+  }
+
+  .life__note {
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 63.99rem) {
+    .life__title {
+      grid-column: 1 / -1;
+    }
+
+    .life__follow {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      justify-self: start;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .life__strip {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      scroll-padding-inline: var(--margin);
+      scrollbar-width: none;
+    }
+
+    .life__strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .life__tile {
+      flex: none;
+      width: 58vw;
+      scroll-snap-align: start;
+    }
+
+    .life__tile--2,
+    .life__tile--4,
+    .life__tile--6 {
+      width: 46vw;
+      margin-top: 2.5rem;
+    }
+
+    .life__tile--3,
+    .life__tile--5 {
+      margin-top: 0;
+    }
+  }
+</style>

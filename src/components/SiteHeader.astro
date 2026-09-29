@@ -1,0 +1,311 @@
+---
+import Icon from './Icon.astro';
+import { agent, brokerage } from '../data/site';
+
+interface Props {
+  /** 'over' = transparent over a dark hero until scrolled; 'solid' = ivory from the start */
+  mode?: 'over' | 'solid';
+  /** Whether the current page has its own #contact section */
+  hasContact?: boolean;
+}
+const { mode = 'over', hasContact = true } = Astro.props;
+const contactHref = hasContact ? '#contact' : '/#contact';
+
+const links = [
+  { href: '/#homes', label: 'Homes' },
+  { href: '/#neighborhoods', label: 'Neighborhoods' },
+  { href: '/about/', label: 'About' },
+  { href: contactHref, label: 'Contact' },
+];
+const current = Astro.url.pathname;
+---
+
+<header class="site-header" data-mode={mode} data-state={mode} data-site-header>
+  <div class="site-header__inner">
+    <a class="wordmark" href="/">
+      <span class="wordmark__name">Kelly Robertson</span>
+      <span class="wordmark__firm">{brokerage.name}</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul role="list">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} aria-current={l.href === current ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a class="pill site-header__cta" href={contactHref}>Book a call</a>
+
+    <button class="menu-button" type="button" aria-haspopup="dialog" data-menu-open>
+      Menu
+    </button>
+  </div>
+</header>
+
+<dialog class="menu" id="site-menu" aria-label="Site menu" data-menu>
+  <div class="menu__inner">
+    <div class="menu__top">
+      <a class="wordmark" href="/">
+        <span class="wordmark__name">Kelly Robertson</span>
+        <span class="wordmark__firm">{brokerage.name}</span>
+      </a>
+      <button class="menu__close" type="button" data-menu-close>
+        <span>Close</span>
+        <Icon name="close" />
+      </button>
+    </div>
+    <nav aria-label="Menu">
+      <ul role="list" class="menu__links">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} data-menu-link>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <div class="menu__foot">
+      <a class="pill pill--solid" href={contactHref} data-menu-link>Book a call</a>
+      <p>
+        <a href={agent.direct.href}>{agent.direct.display}</a>
+        <br />
+        <a href={`mailto:${agent.email}`}>{agent.email}</a>
+      </p>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .site-header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    color: var(--ivory);
+    transition:
+      background-color 0.5s var(--ease-out),
+      color 0.5s var(--ease-out),
+      box-shadow 0.5s var(--ease-out),
+      transform 0.6s var(--ease-out);
+  }
+
+  .site-header[data-state='solid'] {
+    background: var(--ivory);
+    color: var(--ink);
+    box-shadow: 0 1px 0 var(--rule);
+  }
+
+  .site-header[data-hidden='true'] {
+    transform: translateY(-101%);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 3rem);
+    max-width: calc(var(--max) + 2 * var(--margin));
+    height: var(--header-h);
+    margin-inline: auto;
+    padding-inline: var(--margin);
+  }
+
+  .wordmark {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    margin-right: auto;
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .wordmark__name {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.25rem + 0.8vw, 1.9rem);
+    letter-spacing: -0.01em;
+  }
+
+  .wordmark__firm {
+    font-size: var(--step--2);
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  .site-nav ul {
+    display: flex;
+    gap: clamp(1.25rem, 2.4vw, 2.5rem);
+    margin: 0;
+  }
+
+  .site-nav a {
+    position: relative;
+    display: inline-block;
+    padding-block: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .site-nav a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.25rem;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out);
+  }
+
+  .site-nav a:hover::after,
+  .site-nav a[aria-current='page']::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .site-header[data-state='over'] .site-header__cta:hover {
+    background: var(--ivory);
+    border-color: var(--ivory);
+    color: var(--ink);
+  }
+
+  .site-header[data-state='over'] :focus-visible {
+    outline-color: var(--ivory);
+  }
+
+  .menu-button {
+    display: none;
+    min-height: 2.9rem;
+    padding: 0.85em 0.25em;
+    border: 0;
+    background: none;
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 63.99rem) {
+    .site-nav {
+      display: none;
+    }
+
+    .menu-button {
+      display: block;
+    }
+  }
+
+  @media (max-width: 29.99rem) {
+    .site-header__cta {
+      display: none;
+    }
+  }
+
+  /* ---- Menu dialog ---- */
+  .menu {
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: var(--ivory);
+    color: var(--ink);
+    opacity: 0;
+    transition:
+      opacity 0.45s var(--ease-out),
+      display 0.45s allow-discrete,
+      overlay 0.45s allow-discrete;
+  }
+
+  .menu[open] {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .menu[open] {
+      opacity: 0;
+    }
+  }
+
+  .menu::backdrop {
+    background: transparent;
+  }
+
+  .menu__inner {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 0 var(--margin) 2.5rem;
+  }
+
+  .menu__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--header-h);
+  }
+
+  .menu__close {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 2.9rem;
+    padding: 0.5rem 0;
+    border: 0;
+    background: none;
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .menu__close .icon {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .menu__links {
+    margin: clamp(2rem, 8vh, 5rem) 0 0;
+  }
+
+  .menu__links a {
+    display: block;
+    padding-block: 0.2rem;
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 12vw, 5.5rem);
+    line-height: 1.05;
+    text-decoration: none;
+  }
+
+  .menu__links a:hover {
+    font-style: italic;
+  }
+
+  .menu__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    margin-top: auto;
+    padding-top: 3rem;
+    font-size: var(--step-0);
+  }
+
+  .menu__foot p a {
+    text-decoration: none;
+  }
+</style>

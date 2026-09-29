@@ -1,0 +1,218 @@
+---
+import { Image } from 'astro:assets';
+import EqualHousingLogo from './EqualHousingLogo.astro';
+import cbEliteWhite from '../assets/brand/cb-elite-white.png';
+import {
+  agent,
+  brokerage,
+  cbSite,
+  cbDisclaimer,
+  equalHousingStatement,
+  idxDisclaimer,
+} from '../data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer on-ink">
+  <div class="footer__top grid">
+    <div class="footer__brand">
+      <Image
+        src={cbEliteWhite}
+        alt="Coldwell Banker Elite"
+        width={220}
+        densities={[1, 2]}
+        format="webp"
+        class="footer__logo"
+      />
+      <p class="label label--muted footer__office">{brokerage.office} office</p>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="label label--muted">Agent</h2>
+      <p class="serif footer__name">{agent.name}</p>
+      <p>{agent.title}</p>
+      <p>{agent.licenseLabel}</p>
+      <p><a href={agent.direct.href}>Direct {agent.direct.display}</a></p>
+      <p><a class="footer__email" href={`mailto:${agent.email}`}>{agent.email}</a></p>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="label label--muted">Brokerage</h2>
+      <p>{brokerage.name}</p>
+      <p>{brokerage.street}</p>
+      <p>{brokerage.city}, {brokerage.state} {brokerage.zip}</p>
+      <p><a href={brokerage.phone.href}>Office {brokerage.phone.display}</a></p>
+    </div>
+
+    <div class="footer__col">
+      <h2 class="label label--muted">Elsewhere</h2>
+      <ul role="list">
+        <li><a href={agent.facebook.href}>Facebook</a></li>
+        <li><a href={agent.instagram.href}>Instagram</a></li>
+        <li><a href={cbSite.search}>Search all homes</a></li>
+        <li><a href={cbSite.profile}>Coldwell Banker profile</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__legal grid">
+    <div class="footer__eho">
+      <EqualHousingLogo />
+      <p class="label">Equal Housing<br />Opportunity</p>
+    </div>
+
+    <div class="footer__fine">
+      <p>{equalHousingStatement}</p>
+      <p>© {year} Coldwell Banker Real Estate LLC. All Rights Reserved. {cbDisclaimer}</p>
+      <p>{idxDisclaimer}</p>
+      <ul class="footer__links" role="list">
+        <li><a href={cbSite.fairHousing}>Fair Housing Notice</a></li>
+        <li><a href={cbSite.privacy}>Privacy Policy</a></li>
+        <li><a href={cbSite.terms}>Terms of Use</a></li>
+        <li><a href={cbSite.accessibility}>Accessibility</a></li>
+        <li><a href="/credits/">Photo credits</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-bottom: clamp(3rem, 6vw, 5rem);
+    font-size: 0.9375rem;
+  }
+
+  .footer__top {
+    row-gap: 2.5rem;
+    padding-top: clamp(3.5rem, 6vw, 5rem);
+    border-top: 1px solid var(--rule-on-ink);
+  }
+
+  .footer__brand {
+    grid-column: 1 / span 4;
+  }
+
+  .footer__logo {
+    width: clamp(170px, 16vw, 220px);
+    height: auto;
+  }
+
+  .footer__office {
+    margin-top: 1rem;
+  }
+
+  .footer__col {
+    grid-column: span 2;
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+  }
+
+  .footer__col:nth-of-type(2) {
+    grid-column: 6 / span 3;
+  }
+
+  .footer__col:nth-of-type(3) {
+    grid-column: 9 / span 2;
+  }
+
+  .footer__col:nth-of-type(4) {
+    grid-column: 11 / span 2;
+  }
+
+  .footer__col h2 {
+    margin-bottom: 0.6rem;
+  }
+
+  .footer__col ul {
+    display: grid;
+    gap: 0.3rem;
+    margin: 0;
+  }
+
+  .footer__name {
+    font-size: var(--step-1);
+    line-height: 1.2;
+  }
+
+  .footer a {
+    text-decoration-color: var(--rule-on-ink);
+  }
+
+  .footer a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .footer__email {
+    overflow-wrap: anywhere;
+  }
+
+  .footer__legal {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule-on-ink);
+    row-gap: 1.5rem;
+  }
+
+  .footer__eho {
+    grid-column: 1 / span 3;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .footer__eho :global(.eho) {
+    width: 44px;
+    height: auto;
+    flex: none;
+  }
+
+  .footer__fine {
+    grid-column: 5 / -1;
+    display: grid;
+    gap: 0.9rem;
+    color: var(--muted-on-ink);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 0.5rem 0 0;
+    color: var(--ivory);
+  }
+
+  @media (max-width: 63.99rem) {
+    .footer__brand {
+      grid-column: 1 / -1;
+    }
+
+    .footer__col:nth-of-type(2) {
+      grid-column: 1 / span 5;
+    }
+
+    .footer__col:nth-of-type(3) {
+      grid-column: 6 / span 4;
+    }
+
+    .footer__col:nth-of-type(4) {
+      grid-column: 10 / span 3;
+    }
+
+    .footer__eho,
+    .footer__fine {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .footer__col:nth-of-type(2),
+    .footer__col:nth-of-type(3),
+    .footer__col:nth-of-type(4) {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

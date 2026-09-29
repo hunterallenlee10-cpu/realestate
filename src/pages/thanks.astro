@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { agent } from '../data/site';
+---
+
+<Base title="Thank you — Kelly Robertson" headerMode="solid" hasContact={false}>
+  <section class="thanks grid" aria-labelledby="thanks-title">
+    <p class="label thanks__kicker">Message sent</p>
+    <h1 id="thanks-title" class="display thanks__title">Thank <em>you.</em></h1>
+    <p class="lead thanks__text">
+      Your note is on its way to Kelly, and she’ll be in touch soon. If it’s time-sensitive, call her directly at
+      <a href={agent.direct.href}>{agent.direct.display}</a>.
+    </p>
+    <a class="link thanks__back" href="/">Back to the homepage <Icon name="arrow" /></a>
+  </section>
+</Base>
+
+<style>
+  .thanks {
+    min-height: 80vh;
+    padding-top: calc(var(--header-h) + clamp(4rem, 12vw, 10rem));
+    padding-bottom: clamp(5rem, 10vw, 9rem);
+    align-content: start;
+    row-gap: 1.5rem;
+  }
+
+  .thanks__kicker {
+    grid-column: 1 / -1;
+    color: var(--brick);
+  }
+
+  .thanks__title {
+    grid-column: 1 / -1;
+    font-size: var(--step-6);
+    line-height: 0.86;
+  }
+
+  .thanks__text {
+    grid-column: 5 / span 6;
+    margin-top: 2rem;
+  }
+
+  .thanks__back {
+    grid-column: 5 / span 6;
+    justify-self: start;
+  }
+
+  @media (max-width: 63.99rem) {
+    .thanks__text,
+    .thanks__back {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
