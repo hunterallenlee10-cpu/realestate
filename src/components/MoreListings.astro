@@ -1,0 +1,320 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { moreListings } from '../data/listings';
+import { brokerage, cbSite } from '../data/site';
+
+const sizes = [
+  '(max-width: 47.99rem) 100vw, 56vw',
+  '(max-width: 47.99rem) 100vw, 56vw',
+  '(max-width: 47.99rem) 100vw, 44vw',
+];
+---
+
+<section class="more" aria-labelledby="more-title">
+  <div class="more__head grid">
+    <p class="label label--muted more__kicker" data-reveal="fade">Also on the market with {brokerage.name}</p>
+    <h2 id="more-title" class="display more__title" data-reveal="lines">Around <em>downtown</em></h2>
+  </div>
+
+  <ol class="more__list" role="list">
+    {
+      moreListings.map((l, i) => (
+        <li class={`more__item more__item--${i + 1} grid`}>
+          <div class={`more__media more__media--${l.treatment}`}>
+            {l.treatment === 'photo' && (
+              <Photo
+                src={l.photo.src}
+                alt={l.photo.alt}
+                ratio="portrait"
+                sizes={sizes[i]}
+                widths={[480, 800, 1200, 1600]}
+                focus={l.photo.focus}
+                reveal="wipe"
+              />
+            )}
+            {l.treatment === 'mls' && (
+              <Photo
+                src={l.photo.src}
+                alt={l.photo.alt}
+                ratio="native"
+                sizes={sizes[i]}
+                widths={[480, 800, 1200, 1440]}
+                reveal="wipe"
+              />
+            )}
+            {l.treatment === 'drawing' && (
+              <figure class="more__drawing" data-reveal="fade">
+                <Photo
+                  src={l.photo.src}
+                  alt={l.photo.alt}
+                  ratio="native"
+                  sizes={sizes[i]}
+                  widths={[480, 800, 1200, 1426]}
+                  graded={false}
+                />
+                {l.photo.caption && <figcaption class="label label--muted">{l.photo.caption}</figcaption>}
+              </figure>
+            )}
+          </div>
+
+          <div class="more__text" data-reveal="fade">
+            <p class="label more__status">
+              <span class="more__status-dot" aria-hidden="true" />
+              {l.status} <span aria-hidden="true">·</span> {l.area}
+            </p>
+            <h3 class="display more__name">{l.name ?? l.street}</h3>
+            <p class="serif more__city">
+              <em>{l.name ? `${l.street}, ${l.city}` : l.city}</em>
+            </p>
+            <p class="more__summary">{l.summary}</p>
+            <ul class="specs label label--muted" role="list">
+              <li>{l.beds} Beds</li>
+              <li>{l.baths} Baths</li>
+              <li>{l.sqft} Sq Ft</li>
+            </ul>
+            <p class="serif more__price">{l.price}</p>
+            <a class="link" href={l.href}>
+              View on Kelly’s CB site <Icon name="external" />
+            </a>
+            <p class="more__credit">Listed by {l.listedBy}</p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+
+  <div class="more__search grid">
+    <a class="more__search-link" href={cbSite.search}>
+      <span class="display more__search-text">Search all <em>homes</em> <Icon name="external" /></span>
+      <span class="label label--muted more__search-note">Every home on the market, on Kelly’s Coldwell Banker site</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .more {
+    padding-bottom: clamp(6rem, 12vw, 11rem);
+  }
+
+  .more__head {
+    row-gap: 1rem;
+    padding-top: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(3.5rem, 8vw, 7rem);
+  }
+
+  .more__kicker {
+    grid-column: 1 / span 4;
+    padding-top: 1rem;
+  }
+
+  .more__title {
+    grid-column: 5 / -1;
+    font-size: var(--step-4);
+  }
+
+  .more__list {
+    display: grid;
+    gap: clamp(5rem, 12vw, 11rem);
+    margin: 0;
+    padding: 0;
+  }
+
+  .more__item {
+    align-items: end;
+    row-gap: 2rem;
+  }
+
+  /* 1 — image left, text low right */
+  .more__item--1 .more__media {
+    grid-column: 1 / span 6;
+  }
+
+  .more__item--1 .more__text {
+    grid-column: 8 / span 4;
+    padding-bottom: 2rem;
+  }
+
+  /* 2 — text high left, image right */
+  .more__item--2 {
+    align-items: start;
+  }
+
+  .more__item--2 .more__media {
+    grid-column: 6 / -1;
+    grid-row: 1;
+  }
+
+  .more__item--2 .more__text {
+    grid-column: 1 / span 4;
+    grid-row: 1;
+    padding-top: clamp(0rem, 6vw, 6rem);
+  }
+
+  /* 3 — drawing on paper, text right */
+  .more__item--3 {
+    align-items: center;
+  }
+
+  .more__item--3 .more__media {
+    grid-column: 2 / span 6;
+  }
+
+  .more__item--3 .more__text {
+    grid-column: 9 / -1;
+  }
+
+  .more__drawing {
+    padding: clamp(1.25rem, 3vw, 2.75rem);
+    background: var(--paper);
+  }
+
+  .more__drawing :global(.frame) {
+    background: transparent;
+  }
+
+  /* White drawing paper takes on the page's paper tone */
+  .more__drawing :global(img) {
+    mix-blend-mode: multiply;
+  }
+
+  .more__status {
+    display: flex;
+    align-items: center;
+    gap: 0.6em;
+    color: var(--brick);
+  }
+
+  .more__status-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .more__name {
+    margin-top: 1.1rem;
+    font-size: var(--step-3);
+    line-height: 0.98;
+  }
+
+  .more__city {
+    margin-top: 0.35rem;
+    font-size: var(--step-2);
+    line-height: 1.1;
+  }
+
+  .more__summary {
+    margin-top: 1.4rem;
+    max-width: 34em;
+  }
+
+  .more__text .specs {
+    margin-top: 1.4rem;
+  }
+
+  .more__price {
+    margin-top: 0.8rem;
+    margin-bottom: 1rem;
+    font-size: var(--step-2);
+  }
+
+  .more__credit {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .more__search {
+    margin-top: clamp(6rem, 12vw, 11rem);
+  }
+
+  .more__search-link {
+    grid-column: 3 / -1;
+    display: grid;
+    gap: 1rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--ink);
+    text-decoration: none;
+  }
+
+  .more__search-note {
+    order: -1;
+  }
+
+  .more__search-text {
+    display: flex;
+    align-items: center;
+    gap: 0.3em;
+    font-size: var(--step-4);
+    line-height: 1;
+  }
+
+  .more__search-text :global(.icon) {
+    width: 0.55em;
+    height: 0.55em;
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .more__search-link:hover .more__search-text :global(.icon) {
+    transform: translate(0.12em, -0.12em);
+  }
+
+  .more__search-link:hover em {
+    color: var(--brick);
+  }
+
+  @media (max-width: 63.99rem) {
+    .more__kicker,
+    .more__title {
+      grid-column: 1 / -1;
+    }
+
+    .more__item--1 .more__media,
+    .more__item--2 .more__media,
+    .more__item--3 .more__media {
+      grid-column: 1 / span 7;
+    }
+
+    .more__item--2 .more__media {
+      grid-column: 6 / -1;
+    }
+
+    .more__item--1 .more__text,
+    .more__item--3 .more__text {
+      grid-column: 8 / -1;
+    }
+
+    .more__item--2 .more__text {
+      grid-column: 1 / span 5;
+    }
+
+    .more__search-link {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .more__item {
+      align-items: start;
+    }
+
+    .more__item .more__media,
+    .more__item .more__text,
+    .more__item--2 .more__media,
+    .more__item--2 .more__text {
+      grid-column: 1 / -1;
+      grid-row: auto;
+      padding: 0;
+    }
+
+    .more__item--1 .more__media {
+      grid-column: 1 / span 5;
+    }
+
+    .more__item--3 .more__media {
+      grid-column: 2 / -1;
+    }
+  }
+</style>

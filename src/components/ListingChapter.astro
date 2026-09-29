@@ -1,0 +1,264 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { featured as f, listingPath } from '../data/listings';
+
+const stripRatios = ['portrait', 'landscape', 'tall'] as const;
+const stripSizes = [
+  '(max-width: 47.99rem) 78vw, 33vw',
+  '(max-width: 47.99rem) 86vw, 42vw',
+  '(max-width: 47.99rem) 70vw, 25vw',
+];
+---
+
+<section class="chapter" id="homes" aria-labelledby="chapter-title">
+  <div class="chapter__head grid">
+    <p class="label chapter__kicker" data-reveal="fade">Featured listing <span aria-hidden="true">—</span> {f.status}</p>
+    <p class="label label--muted chapter__where" data-reveal="fade">{f.community} · {f.county}</p>
+  </div>
+
+  <Photo
+    src={f.hero.src}
+    alt={f.hero.alt}
+    ratio="letterbox"
+    sizes="100vw"
+    widths={[640, 960, 1280, 1600, 2000, 2400]}
+    focus={f.hero.focus}
+    reveal="wipe"
+    kenburns="scroll"
+    class="chapter__letterbox"
+  />
+
+  <div class="chapter__title grid">
+    <h2 id="chapter-title" class="display chapter__name" data-reveal="lines">{f.shortName}</h2>
+    <p class="chapter__town serif" data-reveal="fade"><em>{f.city}, Virginia</em></p>
+  </div>
+
+  <div class="chapter__body grid">
+    <div class="chapter__meta" data-reveal="fade">
+      <p class="chapter__price serif">{f.price}</p>
+      <ul class="specs label" role="list">
+        <li>{f.beds} Beds</li>
+        <li>{f.baths} Baths</li>
+        <li>{f.sqft} Sq Ft</li>
+        <li>{f.acres} Acres</li>
+      </ul>
+      <p class="label label--muted chapter__mls">MLS# {f.mls}</p>
+    </div>
+
+    <div class="chapter__copy">
+      <p class="chapter__story lead" data-reveal="fade">{f.story}</p>
+      <div class="chapter__actions" data-reveal="fade">
+        <a class="pill pill--solid" href={listingPath(f.slug)}>
+          View details <Icon name="arrow" />
+        </a>
+        <a class="link" href={f.virtualTour} rel="noopener">
+          Virtual tour <Icon name="external" />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="chapter__strip grid" role="region" aria-label={`Photos of ${f.street}`} data-scroll-region>
+    {
+      f.strip.map((p, i) => (
+        <figure class={`strip__item strip__item--${i + 1}`}>
+          <Photo
+            src={p.src}
+            alt={p.alt}
+            ratio={stripRatios[i]}
+            sizes={stripSizes[i]}
+            widths={[400, 640, 900, 1200, 1600]}
+            focus={p.focus}
+            reveal="wipe"
+          />
+          <figcaption class="label label--muted">
+            <span class="strip__num">{String(i + 1).padStart(2, '0')}</span> {p.caption}
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .chapter {
+    padding-bottom: clamp(7rem, 14vw, 13rem);
+  }
+
+  .chapter__head {
+    align-items: end;
+    padding-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  }
+
+  .chapter__kicker {
+    grid-column: 1 / span 5;
+    color: var(--brick);
+  }
+
+  .chapter__where {
+    grid-column: 8 / -1;
+    justify-self: end;
+    text-align: right;
+  }
+
+  .chapter__title {
+    align-items: end;
+    padding-top: clamp(1.5rem, 3vw, 2.75rem);
+  }
+
+  .chapter__name {
+    grid-column: 1 / span 10;
+    font-size: clamp(3.4rem, 0.6rem + 11.2vw, 13rem);
+    line-height: 0.86;
+    letter-spacing: -0.02em;
+  }
+
+  .chapter__town {
+    grid-column: 1 / span 8;
+    margin-top: 0.4em;
+    padding-left: clamp(0rem, 9vw, 9rem);
+    font-size: var(--step-3);
+    line-height: 1;
+  }
+
+  .chapter__body {
+    margin-top: clamp(3rem, 7vw, 6.5rem);
+    row-gap: 2.5rem;
+  }
+
+  .chapter__meta {
+    grid-column: 1 / span 4;
+    align-self: start;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .chapter__price {
+    font-size: var(--step-3);
+    line-height: 1;
+    margin-bottom: 1.1rem;
+  }
+
+  .chapter__mls {
+    margin-top: 0.6rem;
+  }
+
+  .chapter__copy {
+    grid-column: 6 / span 6;
+  }
+
+  .chapter__story {
+    max-width: 38em;
+  }
+
+  .chapter__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 2.25rem;
+    margin-top: 2.25rem;
+  }
+
+  /* Gallery strip — three widths, three heights, staggered */
+  .chapter__strip {
+    margin-top: clamp(5rem, 11vw, 10rem);
+    align-items: start;
+  }
+
+  .chapter__strip:focus-visible {
+    outline-offset: 8px;
+  }
+
+  .strip__item--1 {
+    grid-column: 1 / span 4;
+  }
+
+  .strip__item--2 {
+    grid-column: 5 / span 5;
+    margin-top: clamp(4rem, 12vw, 12rem);
+  }
+
+  .strip__item--3 {
+    grid-column: 10 / span 3;
+    margin-top: clamp(1.5rem, 4vw, 4rem);
+  }
+
+  .strip__num {
+    color: var(--brick);
+    margin-right: 0.6em;
+  }
+
+  @media (max-width: 63.99rem) {
+    .chapter__meta {
+      grid-column: 1 / span 5;
+    }
+
+    .chapter__copy {
+      grid-column: 7 / -1;
+    }
+
+    .chapter__name {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .chapter__kicker,
+    .chapter__where,
+    .chapter__town,
+    .chapter__meta,
+    .chapter__copy {
+      grid-column: 1 / -1;
+    }
+
+    .chapter__where {
+      justify-self: start;
+      text-align: left;
+      margin-top: 0.4rem;
+    }
+
+    .chapter__town {
+      padding-left: 0;
+    }
+
+    .chapter :global(.chapter__letterbox) {
+      aspect-ratio: 4 / 5;
+    }
+
+    /* Mobile: a swipeable strip instead of a stacked grid */
+    .chapter__strip {
+      display: flex;
+      gap: 0.875rem;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--margin);
+      scrollbar-width: none;
+      align-items: start;
+    }
+
+    .chapter__strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .strip__item {
+      flex: none;
+      scroll-snap-align: start;
+      margin-top: 0 !important;
+    }
+
+    .strip__item--1 {
+      width: 72vw;
+    }
+
+    .strip__item--2 {
+      width: 86vw;
+      margin-top: 3rem !important;
+    }
+
+    .strip__item--3 {
+      width: 64vw;
+    }
+  }
+</style>

@@ -1,0 +1,138 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import portrait from '../assets/kelly/kelly-robertson-portrait.jpg';
+import { agent, brokerage } from '../data/site';
+---
+
+<section class="about grid" id="about" aria-labelledby="about-title">
+  <div class="about__portrait">
+    <Photo
+      src={portrait}
+      alt="Kelly Robertson smiling outdoors, with the water behind her."
+      ratio="portrait"
+      sizes="(max-width: 47.99rem) 80vw, 34vw"
+      widths={[portrait.width]}
+      focus="50% 30%"
+      reveal="wipe"
+    />
+    <p class="about__portrait-note">
+      <span class="placeholder">[High-resolution portrait needed]</span>
+    </p>
+  </div>
+
+  <div class="about__text">
+    <h2 id="about-title" class="label about__kicker" data-reveal="fade">About Kelly</h2>
+
+    <!-- Real quote — from Kelly's current bio. -->
+    <blockquote class="about__quote display" data-reveal="lines">
+      “Integrity and hard work are my <em>core values.</em>”
+    </blockquote>
+
+    <div class="about__bio" data-reveal="fade">
+      <p>
+        My family has been blessed with calling Virginia home for generations. I began my career as a marketing
+        director for a builder in Fairfax, moved into residential mortgage a few years later, and — after buying
+        our second home — became a Virginia REALTOR® in {agent.since}.
+      </p>
+      <p>
+        Today I help clients buy, sell and invest across the region, and I invest in mid- and long-term rentals
+        myself. As a certified Military Relocation Professional in a military family, I understand the challenges
+        of a PCS move — and I’ll be there each step of the way.
+      </p>
+    </div>
+
+    <div class="about__sig" data-reveal="fade">
+      <p class="serif about__name">{agent.name}</p>
+      <p class="label label--muted">{agent.title} · {brokerage.name}</p>
+      <p class="label label--muted">{agent.designation}</p>
+    </div>
+
+    <a class="link about__more" href="/about/">Read Kelly’s story <Icon name="arrow" /></a>
+  </div>
+</section>
+
+<style>
+  .about {
+    padding-block: clamp(7rem, 14vw, 13rem);
+    align-items: start;
+    row-gap: 3rem;
+  }
+
+  .about__portrait {
+    grid-column: 1 / span 4;
+    position: sticky;
+    top: calc(var(--header-h) + 2rem);
+  }
+
+  .about__portrait-note {
+    margin-top: 0.9rem;
+  }
+
+  .about__text {
+    grid-column: 6 / span 6;
+    padding-top: clamp(0rem, 4vw, 4rem);
+  }
+
+  .about__kicker {
+    color: var(--brick);
+  }
+
+  .about__quote {
+    margin: 1.75rem 0 0;
+    font-size: var(--step-4);
+    line-height: 0.98;
+    text-indent: -0.4em;
+  }
+
+  .about__bio {
+    display: grid;
+    gap: 1.1rem;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    max-width: 36em;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .about__sig {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .about__name {
+    font-size: var(--step-2);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .about__more {
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 63.99rem) {
+    .about__portrait {
+      grid-column: 1 / span 5;
+    }
+
+    .about__text {
+      grid-column: 7 / -1;
+    }
+  }
+
+  @media (max-width: 47.99rem) {
+    .about__portrait {
+      grid-column: 1 / span 5;
+      position: static;
+    }
+
+    .about__text {
+      grid-column: 1 / -1;
+      padding-top: 0;
+    }
+
+    .about__quote {
+      text-indent: 0;
+    }
+  }
+</style>

@@ -1,0 +1,585 @@
+/* ==========================================================================
+   Kelly Robertson — design system
+   Warm ivory, near-black ink, one historic-brick accent. Instrument Serif for
+   display, Hanken Grotesk for text. Font families come from the Astro Fonts API
+   (astro.config.mjs) as --font-display / --font-body.
+   ========================================================================== */
+
+:root {
+  /* Color — every text pairing below is ≥ 4.5:1 (see README › Accessibility) */
+  --ivory: #f7f3ec;          /* page background — never pure white */
+  --paper: #efe8dc;          /* deeper ivory for panels */
+  --ink: #1c1b19;            /* text, dark sections (15.6:1 on ivory) */
+  --ink-2: #252320;          /* raised surface on ink */
+  --muted: #5e574d;          /* secondary text (6.4:1 on ivory) */
+  --brick: #8e3b2b;          /* accent — Fredericksburg brick (6.8:1 on ivory) */
+  --brick-hover: #75301f;
+  --brick-on-ink: #d4917b;   /* accent on dark (6.7:1 on ink) */
+  --muted-on-ink: #a69c8d;   /* secondary text on dark (6.4:1 on ink) */
+  --rule: rgb(28 27 25 / 0.18);
+  --rule-on-ink: rgb(247 243 236 / 0.24);
+
+  /* Type scale (fluid) */
+  --step--2: 0.6875rem;                                  /* 11px — micro labels */
+  --step--1: 0.75rem;                                    /* 12px — labels */
+  --step-0: clamp(1rem, 0.95rem + 0.22vw, 1.125rem);     /* body */
+  --step-1: clamp(1.125rem, 1.02rem + 0.5vw, 1.375rem);  /* lead */
+  --step-2: clamp(1.625rem, 1.3rem + 1.4vw, 2.5rem);
+  --step-3: clamp(2.25rem, 1.55rem + 3vw, 4.25rem);
+  --step-4: clamp(3rem, 1.6rem + 6vw, 7.5rem);
+  --step-5: clamp(3.4rem, 1.2rem + 9.6vw, 11.5rem);
+  --step-6: clamp(4.2rem, 1rem + 14vw, 16rem);
+
+  /* Layout */
+  --margin: clamp(1.25rem, 4.2vw, 4.5rem);   /* page side margin */
+  --gutter: clamp(0.875rem, 1.8vw, 2rem);    /* column gap */
+  --max: 1600px;                             /* max content width (excl. margins) */
+  --header-h: 5.25rem;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* One shared warm grade for every photograph */
+  --grade: saturate(0.88) sepia(0.12) contrast(1.03) brightness(1.02);
+
+  color-scheme: light;
+}
+
+/* --------------------------------------------------------------------------
+   Reset / base
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: var(--header-h);
+}
+
+body {
+  margin: 0;
+  background: var(--ivory);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  font-weight: 400;
+  line-height: 1.6;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: clip;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+ul,
+ol,
+dl,
+dd {
+  margin: 0;
+}
+
+/* zero specificity so layout classes (e.g. .grid padding) always win */
+:where(ul[role='list'], ol[role='list']) {
+  list-style: none;
+  padding: 0;
+}
+
+img,
+picture,
+video,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--brick);
+  color: var(--ivory);
+}
+
+/* Visible, consistent focus — brick on light, ivory on dark */
+:focus-visible {
+  outline: 2px solid var(--brick);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.on-ink :focus-visible,
+[data-surface='dark'] :focus-visible {
+  outline-color: var(--ivory);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 100;
+  padding: 0.85rem 1.25rem;
+  background: var(--ink);
+  color: var(--ivory);
+  font-size: var(--step--1);
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform 0.3s var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: none;
+}
+
+/* --------------------------------------------------------------------------
+   Layout
+   -------------------------------------------------------------------------- */
+
+/* 12-column grid (6 on small screens). Components place children explicitly,
+   deliberately off-centre. */
+.grid {
+  --cols: 12;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  width: 100%;
+  max-width: calc(var(--max) + 2 * var(--margin));
+  margin-inline: auto;
+  padding-inline: var(--margin);
+}
+
+@media (max-width: 47.99rem) {
+  .grid {
+    --cols: 6;
+  }
+}
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--max) + 2 * var(--margin));
+  margin-inline: auto;
+  padding-inline: var(--margin);
+}
+
+.on-ink {
+  background: var(--ink);
+  color: var(--ivory);
+}
+
+/* --------------------------------------------------------------------------
+   Type
+   -------------------------------------------------------------------------- */
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.94;
+  letter-spacing: -0.012em;
+  text-wrap: balance;
+}
+
+.display em,
+.serif em,
+em.serif {
+  font-style: italic;
+}
+
+.serif {
+  font-family: var(--font-display);
+  font-weight: 400;
+}
+
+/* Small uppercase labels: addresses, specs, section labels */
+.label {
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.label--muted {
+  color: var(--muted);
+}
+
+.on-ink .label--muted {
+  color: var(--muted-on-ink);
+}
+
+.lead {
+  font-size: var(--step-1);
+  line-height: 1.55;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.on-ink .muted {
+  color: var(--muted-on-ink);
+}
+
+/* Specs line: 5 Beds · 5 Baths · 5,690 Sq Ft */
+.specs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35em 0;
+  padding: 0;
+  list-style: none;
+}
+
+.specs li:not(:last-child)::after {
+  content: '·';
+  display: inline-block;
+  margin-inline: 0.7em;
+  opacity: 0.6;
+}
+
+a[href^='tel:'],
+.nowrap {
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Controls
+   -------------------------------------------------------------------------- */
+.pill {
+  --pill-fg: currentColor;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75em;
+  min-height: 2.9rem;
+  padding: 0.85em 1.55em;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.45s var(--ease-out),
+    color 0.45s var(--ease-out),
+    border-color 0.45s var(--ease-out);
+}
+
+.pill:hover {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ivory);
+}
+
+.pill--solid {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--ivory);
+}
+
+.pill--solid:hover {
+  background: var(--brick);
+  border-color: var(--brick);
+}
+
+.on-ink .pill:hover,
+[data-surface='dark'] .pill:hover {
+  background: var(--ivory);
+  border-color: var(--ivory);
+  color: var(--ink);
+}
+
+.on-ink .pill--solid {
+  background: var(--ivory);
+  border-color: var(--ivory);
+  color: var(--ink);
+}
+
+.on-ink .pill--solid:hover {
+  background: var(--brick-on-ink);
+  border-color: var(--brick-on-ink);
+  color: var(--ink);
+}
+
+.pill .icon {
+  width: 1.1em;
+  height: 1.1em;
+  flex: none;
+}
+
+/* Text link with a drawn underline */
+.link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding-block: 0.3em;
+  text-decoration: none;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: currentColor;
+  transform-origin: left;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.link:hover::after {
+  transform-origin: right;
+  transform: scaleX(0.25);
+}
+
+.link .icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  transition: transform 0.5s var(--ease-out);
+}
+
+.link:hover .icon--arrow {
+  transform: translateX(0.25em);
+}
+
+.link:hover .icon--external {
+  transform: translate(0.15em, -0.15em);
+}
+
+/* --------------------------------------------------------------------------
+   Photography
+   -------------------------------------------------------------------------- */
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--paper);
+}
+
+.frame picture,
+.frame img,
+.frame video {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.frame img,
+.frame video {
+  object-fit: cover;
+}
+
+.graded img,
+.graded video,
+img.graded {
+  filter: var(--grade);
+}
+
+.ratio-letterbox {
+  aspect-ratio: 2.39 / 1;
+}
+
+.ratio-landscape {
+  aspect-ratio: 3 / 2;
+}
+
+.ratio-wide {
+  aspect-ratio: 16 / 10;
+}
+
+.ratio-portrait {
+  aspect-ratio: 4 / 5;
+}
+
+.ratio-tall {
+  aspect-ratio: 3 / 4;
+}
+
+.ratio-square {
+  aspect-ratio: 1 / 1;
+}
+
+figcaption {
+  margin-top: 0.9rem;
+}
+
+/* --------------------------------------------------------------------------
+   Placeholders — deliberately visible. Every one is listed in the README.
+   -------------------------------------------------------------------------- */
+.placeholder {
+  display: inline-block;
+  padding: 0.35em 0.6em;
+  border: 1px dashed currentColor;
+  color: var(--brick);
+  font-family: var(--font-body);
+  font-size: var(--step--2);
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.on-ink .placeholder {
+  color: var(--brick-on-ink);
+}
+
+/* --------------------------------------------------------------------------
+   Motion — progressive enhancement.
+   `.motion` is added by an inline script only when JS runs and the visitor
+   hasn't asked for reduced motion; reveal targets stay hidden until the
+   motion script prepares them (with a timeout fallback in Base.astro).
+   -------------------------------------------------------------------------- */
+/* opacity (not visibility) so unrevealed links stay in the tab order;
+   focusing one reveals it immediately (scripts/motion.ts) */
+.motion [data-reveal] {
+  opacity: 0;
+}
+
+/* SplitText line masks: room for ascenders/descenders at tight line-heights */
+.split-line-mask {
+  padding-block: 0.1em 0.18em;
+  margin-block: -0.1em -0.18em;
+}
+
+/* Hero intros run on CSS alone, from first paint (no waiting on JS). */
+@keyframes line-rise {
+  from {
+    transform: translate3d(0, 108%, 0);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.intro-line {
+  display: block;
+}
+
+.motion .intro-line {
+  overflow: clip;
+  padding-block: 0.1em 0.18em;
+  margin-block: -0.1em -0.18em;
+}
+
+.motion .intro-line > span {
+  display: block;
+  animation: line-rise 1.7s var(--ease-out) both;
+  animation-delay: calc(150ms + var(--i, 0) * 110ms);
+}
+
+.motion .intro-fade {
+  animation: fade-rise 1.3s var(--ease-out) both;
+  animation-delay: var(--d, 500ms);
+}
+
+@keyframes ken-burns {
+  from {
+    transform: scale(1.04) translate3d(0, 0, 0);
+  }
+  to {
+    transform: scale(1.16) translate3d(-1.6%, -1.2%, 0);
+  }
+}
+
+.ken-burns {
+  animation: ken-burns 26s var(--ease-in-out) infinite alternate;
+  transform-origin: 60% 45%;
+  will-change: transform;
+}
+
+[data-paused='true'] .ken-burns {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .ken-burns {
+    animation: none;
+    transform: none;
+  }
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
